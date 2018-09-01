@@ -32,5 +32,6 @@ build_lib: $(OBJS)
 clean:
 	rm -rf $(LIB_DIR)/*.a $(SRC_DIR)/*~ $(INC_DIR)/*~ *~ .*~ *.sw?
 	(find bin/ -type f -printf "$(BIN_DIR)/%P\n"; echo $(BIN_DIR)/support.o) | sort | uniq -u | xargs -r rm
+	make -C testes/ clean
 
 .PHONY: clean build-lib all

@@ -36,11 +36,15 @@ int cthread_schedule(TCB_t* current_thread) {
 			AppendFila2(&cthread_priority_fifos[current_thread->prio], (void*)current_thread);
 			// swap contexts
 			printf("Swapping contexts from thread %d to thread %d!\n", current_thread->tid, next_thread->tid);
-			swapcontext( &(current_thread->context), &(next_thread->context) );
+			if( swapcontext( &(current_thread->context), &(next_thread->context) ) != 0 ) {
+				return -1;
+			}
 		} else {
 			// set context
 			printf("Swapping context from terminated thread to thread %d!\n", next_thread->tid);
-			setcontext( &(next_thread->context) );
+			if( setcontext( &(next_thread->context) ) != 0 ) {
+				return -1;
+			}
 		}
 
 	} else {
