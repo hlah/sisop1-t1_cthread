@@ -1,5 +1,6 @@
 #include "../include/cthread_internal.h"
 
 int cyield() {
-	return -1;
+	// schedule
+	return cthread_schedule(cthread_executing_thread);
 }

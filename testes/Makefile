@@ -14,7 +14,10 @@ $(LIB_DIR)/libcthread.a:
 testa_inicio: testa_inicio.c $(LIB_DIR)/libcthread.a
 	$(CC) -o testa_inicio testa_inicio.c -L$(LIB_DIR) $(CFLAGS)
 
+testa_yield: testa_yield.c $(LIB_DIR)/libcthread.a
+	$(CC) -o testa_yield testa_yield.c -L$(LIB_DIR) $(CFLAGS)
+
 .PHONY: all clean testa_inicio
 	
 clean:
-	rm -rf testa_inicio *.o *~
+	rm -rf testa_inicio testa_yield *.o *~
