@@ -13,7 +13,9 @@ int ccreate (void* (*start)(void*), void *arg, int prio) {
 	thread_info->state = CTHREAD_STATE_CREATION;
 	thread_info->prio = prio;
 	thread_info->data = NULL;
-	getcontext(&(thread_info->context));
+	if( getcontext(&(thread_info->context)) != 0) {
+		return -1;
+	}
 	(thread_info->context).uc_stack.ss_sp = malloc(CTHREAD_STACK_SIZE);
 	(thread_info->context).uc_stack.ss_size = CTHREAD_STACK_SIZE;
 	(thread_info->context).uc_link = &cthread_termination_context;				
