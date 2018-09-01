@@ -1,3 +1,4 @@
+#define DEBUG
 #include "../include/cthread.h"
 #include <stddef.h>
 #include <stdio.h>
@@ -8,7 +9,7 @@ void* mythread_low(void*);
 int main() {
 
 	int thread1 = ccreate(mythread, (void*)1, 2);
-	int thread2 = ccreate(mythread, (void*)3, 0);
+	int thread2 = ccreate(mythread, (void*)2, 0);
 
 	cjoin(thread1);
 	cjoin(thread2);

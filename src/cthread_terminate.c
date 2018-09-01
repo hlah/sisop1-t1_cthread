@@ -4,7 +4,7 @@
 
 // termina thread atual
 void cthread_terminate() {
-	printf("Terminating thread %d\n", cthread_executing_thread->tid);
+	DEBUG_PRINT("Terminating thread %d\n", cthread_executing_thread->tid);
 	// se algum thread esperando join, recoloca na fifo de aptors
 	if( cthread_executing_thread->data != NULL ) {
 		TCB_t* joined_thread = (TCB_t*)cthread_executing_thread->data;
@@ -21,7 +21,7 @@ void cthread_terminate() {
 	cthread_schedule(cthread_executing_thread, 0);
 
 
-	printf("ERROR: THIS SHOULD NOT BE REACHED!!!!!\n");
+	DEBUG_PRINT("ERROR: THIS SHOULD NOT BE REACHED!!!!!\n");
 	assert(0);
 
 }

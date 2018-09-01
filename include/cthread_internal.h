@@ -23,7 +23,16 @@
 
 #define CTHREAD_STACK_SIZE		16*1024			// 16Kb
 
-/////// funções internos da biblioteca ///////////
+
+///// macros
+#ifdef DEBUG
+#define DEBUG_PRINT(...) do{ fprintf( stderr, __VA_ARGS__  );  } while( 0 )
+#else
+#define DEBUG_PRINT(...) do{  } while ( 0 )
+#endif
+
+
+/////// funções internas da biblioteca ///////////
 // inicializa cthread
 int cthread_init();
 // cria contexto da main
@@ -38,8 +47,6 @@ void cthread_terminate();
 int cthread_check_priority(int prio);
 // acha thread com dado tid
 TCB_t* cthread_find_thread(int tid);
-// bloqueia thread atual
-int cthread_block();
 
 /////// variaveis internas da cthread ////////
 // indica se cthread foi inicializado

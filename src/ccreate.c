@@ -7,7 +7,7 @@ int ccreate (void* (*start)(void*), void *arg, int prio) {
 	cthread_init();
 
 	// cria novo thread
-	printf("Creating new thread...");
+	DEBUG_PRINT("Creating new thread...");
 	TCB_t* thread_info = (TCB_t*) malloc(sizeof(TCB_t));
 	int tid = thread_info->tid = cthread_next_id++;
 	thread_info->state = CTHREAD_STATE_CREATION;
@@ -20,7 +20,7 @@ int ccreate (void* (*start)(void*), void *arg, int prio) {
 	(thread_info->context).uc_stack.ss_size = CTHREAD_STACK_SIZE;
 	(thread_info->context).uc_link = &cthread_termination_context;				
 	makecontext(&(thread_info->context), (void*)(int)start, 1, (int*)arg);
-	printf(" created! (tid=%d)\n", thread_info->tid);
+	DEBUG_PRINT(" created! (tid=%d)\n", thread_info->tid);
 	cthread_add_thread(thread_info);
 
 	// cria main thread

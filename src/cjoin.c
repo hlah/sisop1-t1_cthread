@@ -15,7 +15,7 @@ int cjoin(int tid) {
 	}
 
 	// bloqueia thread
-	printf("thread %d waiting for thread %d\n", cthread_executing_thread->tid, tid);
+	DEBUG_PRINT("thread %d waiting for thread %d\n", cthread_executing_thread->tid, tid);
 	thread->data = (void*) cthread_executing_thread;
 	cthread_schedule(cthread_executing_thread, 1);
 

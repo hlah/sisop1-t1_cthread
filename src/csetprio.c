@@ -5,7 +5,7 @@
 int csetprio(int tid, int prio) {
 
 	cthread_executing_thread->prio = prio;
-	printf("Setting priority of current thread (%d) to %d.\n", cthread_executing_thread->tid, prio);
+	DEBUG_PRINT("Setting priority of current thread (%d) to %d.\n", cthread_executing_thread->tid, prio);
 
 	// reescalona
 	if( cthread_check_priority(prio) ) {

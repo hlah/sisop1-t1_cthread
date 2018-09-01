@@ -15,7 +15,11 @@ LIB_DIR=./lib
 INC_DIR=./include
 BIN_DIR=./bin
 SRC_DIR=./src
+ifdef DEBUG
+C_FLAGS=-Wall -m32 -DDEBUG
+else
 C_FLAGS=-Wall -m32
+endif
 
 OBJS=$(patsubst $(SRC_DIR)/%.c, $(BIN_DIR)/%.o, $(wildcard $(SRC_DIR)/*.c))
 
