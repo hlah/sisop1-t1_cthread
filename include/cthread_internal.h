@@ -31,11 +31,15 @@ TCB_t* cthread_create_main_thread();
 // adiciona novo thread
 int cthread_add_thread(TCB_t* thread_info);
 // escalona proximo thread
-int cthread_schedule(TCB_t* current_thread);
+int cthread_schedule(TCB_t* current_thread, int block);
 // termina thread atual
 void cthread_terminate();
 // checa se a prioridade maior que a dada
-int cthread_check_priority(int tid);
+int cthread_check_priority(int prio);
+// acha thread com dado tid
+TCB_t* cthread_find_thread(int tid);
+// bloqueia thread atual
+int cthread_block();
 
 /////// variaveis internas da cthread ////////
 // indica se cthread foi inicializado

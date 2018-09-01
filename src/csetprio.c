@@ -9,7 +9,7 @@ int csetprio(int tid, int prio) {
 
 	// reescalona
 	if( cthread_check_priority(prio) ) {
-		cthread_schedule(cthread_executing_thread);
+		cthread_schedule(cthread_executing_thread, 0);
 	}
 
 	return 0;

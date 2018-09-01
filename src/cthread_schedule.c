@@ -1,7 +1,7 @@
 #include "../include/cthread_internal.h"
 #include <stdio.h>
 
-int cthread_schedule(TCB_t* current_thread) {
+int cthread_schedule(TCB_t* current_thread, int block) {
 	int fifo_i=CTHREAD_NUM_PRIORITY_LEVELS-1;
 
 	// move threads criados para fila de aptos
@@ -16,7 +16,7 @@ int cthread_schedule(TCB_t* current_thread) {
 	}
 
 	// coloca anterior na respectiva fila
-	if( current_thread != NULL ) {
+	if( current_thread != NULL && !block) {
 		AppendFila2(&cthread_priority_fifos[current_thread->prio], (void*)current_thread);
 	}
 

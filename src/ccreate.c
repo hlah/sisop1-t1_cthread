@@ -9,7 +9,7 @@ int ccreate (void* (*start)(void*), void *arg, int prio) {
 	// cria novo thread
 	printf("Creating new thread...");
 	TCB_t* thread_info = (TCB_t*) malloc(sizeof(TCB_t));
-	thread_info->tid = cthread_next_id++;
+	int tid = thread_info->tid = cthread_next_id++;
 	thread_info->state = CTHREAD_STATE_CREATION;
 	thread_info->prio = prio;
 	thread_info->data = NULL;
@@ -27,7 +27,7 @@ int ccreate (void* (*start)(void*), void *arg, int prio) {
 	cthread_create_main_thread();
 
 	// escalona thread
-	cthread_schedule(cthread_executing_thread);
+	cthread_schedule(cthread_executing_thread, 0);
 	
-	return (thread_info->tid);
+	return tid;
 }

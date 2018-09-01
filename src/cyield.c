@@ -2,5 +2,5 @@
 
 int cyield() {
 	// schedule
-	return cthread_schedule(cthread_executing_thread);
+	return cthread_schedule(cthread_executing_thread, 0);
 }
