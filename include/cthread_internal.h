@@ -34,8 +34,8 @@ int cthread_add_thread(TCB_t* thread_info);
 int cthread_schedule(TCB_t* current_thread);
 // termina thread atual
 void cthread_terminate();
-
-
+// checa se a prioridade maior que a dada
+int cthread_check_priority(int tid);
 
 /////// variaveis internas da cthread ////////
 // indica se cthread foi inicializado

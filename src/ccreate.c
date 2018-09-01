@@ -29,5 +29,5 @@ int ccreate (void* (*start)(void*), void *arg, int prio) {
 	// escalona thread
 	cthread_schedule(cthread_executing_thread);
 	
-	return 0;
+	return (thread_info->tid);
 }
