@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <assert.h>
 #include "../include/support.h"
 #include "../include/cthread.h"
 #include "../include/cdata.h"
@@ -32,19 +33,28 @@ TCB_t* cthread_create_main_thread();
 int cthread_add_thread(TCB_t* thread_info);
 // escalona proximo thread
 int cthread_schedule(TCB_t* current_thread);
+// termina thread atual
+void cthread_terminate();
+
 
 
 /////// variaveis internas da cthread ////////
 // indica se cthread foi inicializado
 int cthread_inicializado = 0;
+
 // filas de prioridade
 FILA2 cthread_priority_fifos[CTHREAD_NUM_PRIORITY_LEVELS];
 // fila de criação
 FILA2 cthread_created_fifo;
 // thread em execução
 TCB_t* cthread_executing_thread = NULL;
+
 // id do proximo thread
 int cthread_next_id = 1;
+
+// contexto de terminação
+ucontext_t cthread_termination_context;
+
 
 
 int ccreate (void* (*start)(void*), void *arg, int prio) {
@@ -61,19 +71,16 @@ int ccreate (void* (*start)(void*), void *arg, int prio) {
 	getcontext(&(thread_info->context));
 	(thread_info->context).uc_stack.ss_sp = malloc(CTHREAD_STACK_SIZE);
 	(thread_info->context).uc_stack.ss_size = CTHREAD_STACK_SIZE;
-	(thread_info->context).uc_link = NULL;				// TODO termination context
+	(thread_info->context).uc_link = &cthread_termination_context;				
 	makecontext(&(thread_info->context), (void*)(int)start, 1, (int*)arg);
 	printf(" created! (tid=%d)\n", thread_info->tid);
 	cthread_add_thread(thread_info);
 
 	// cria main thread
-	TCB_t* main_thread = cthread_create_main_thread();
-	if( main_thread == NULL ) {
-		return -1;
-	}
+	cthread_create_main_thread();
 
 	// escalona thread
-	cthread_schedule(main_thread);
+	cthread_schedule(cthread_executing_thread);
 	
 	return 0;
 }
@@ -120,6 +127,13 @@ int cthread_init() {
 		// inicializa fila de criação
 		printf("Creating 'created' fifo.\n");
 		CreateFila2(&cthread_created_fifo);
+		// cria contexto de teminação
+		printf("Creating termination context.\n");
+		getcontext(&cthread_termination_context);
+		cthread_termination_context.uc_stack.ss_sp = malloc(CTHREAD_STACK_SIZE);
+		cthread_termination_context.uc_stack.ss_size = CTHREAD_STACK_SIZE;
+		cthread_termination_context.uc_link = NULL;	
+		makecontext(&cthread_termination_context, cthread_terminate, 0);
 	}
 
 	return 0;
@@ -137,6 +151,7 @@ TCB_t* cthread_create_main_thread() {
 		main_thread->data = NULL;
 		getcontext(&(main_thread->context));
 		cthread_add_thread(main_thread);
+		cthread_executing_thread = main_thread;
 		printf(" created!\n");
 
 		cthread_inicializado = 1;
@@ -166,7 +181,7 @@ int cthread_schedule(TCB_t* current_thread) {
 		int priority = next_created_thread->prio;
 		AppendFila2(&cthread_priority_fifos[priority], (void*)next_created_thread);
 		DeleteAtIteratorFila2(&cthread_created_fifo);
-		printf("Moved created thread %d to priority queue %d\n", next_created_thread->tid, priority);
+		printf("Moved created thread %d (%p) to priority queue %d\n", next_created_thread->tid, next_created_thread, priority);
 	}
 
 	// obtém próximo thread
@@ -178,20 +193,23 @@ int cthread_schedule(TCB_t* current_thread) {
 		next_thread = (TCB_t*)GetAtIteratorFila2(&cthread_priority_fifos[fifo_i]);
 		printf("next thread: %p\n", next_thread);
 	}
+
 	
 	if( next_thread != NULL ) {
+		// coloca como thread em execução
+		cthread_executing_thread = next_thread;
+		// remove novo da fila
+		DeleteAtIteratorFila2(&(cthread_priority_fifos[fifo_i]));
 		if( current_thread != NULL ) {
-			// coloca como thread em execução
-			cthread_executing_thread = next_thread;
-			// remove novo da fila
-			DeleteAtIteratorFila2(&(cthread_priority_fifos[fifo_i]));
-			// coloca anteriro na respectiva fila
+			// coloca anterior na respectiva fila
 			AppendFila2(&cthread_priority_fifos[current_thread->prio], (void*)current_thread);
 			// swap contexts
 			printf("Swapping contexts from thread %d to thread %d!\n", current_thread->tid, next_thread->tid);
 			swapcontext( &(current_thread->context), &(next_thread->context) );
 		} else {
-			printf("current thread is NULL!!\n");
+			// set context
+			printf("Swapping context from terminated thread to thread %d!\n", next_thread->tid);
+			setcontext( &(next_thread->context) );
 		}
 
 	} else {
@@ -201,4 +219,25 @@ int cthread_schedule(TCB_t* current_thread) {
 
 
 	return 0;
+}
+
+// termina thread atual
+void cthread_terminate() {
+	printf("Terminating thread %d\n", cthread_executing_thread->tid);
+	// libera memoria da stack
+	assert(cthread_executing_thread->tid != 0);
+	free((cthread_executing_thread->context).uc_stack.ss_sp);
+	(cthread_executing_thread->context).uc_stack.ss_size = 0;
+	// libera TCB
+	free(cthread_executing_thread);
+	cthread_executing_thread = NULL;
+	
+	/// RESETAR CONTEXTO ?
+
+	// escalona proximo thread
+	cthread_schedule(cthread_executing_thread);
+
+
+	printf("ERROR: THIS SHOULD NOT BE REACHED!!!!!\n");
+
 }
