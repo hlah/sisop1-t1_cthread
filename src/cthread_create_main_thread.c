@@ -11,7 +11,6 @@ TCB_t* cthread_create_main_thread() {
 		cthread_main_thread.prio = CTHREAD_LOW_PRIORITY;
 		cthread_main_thread.data = NULL;
 		getcontext(&(cthread_main_thread.context));
-		cthread_add_thread(&cthread_main_thread);
 		cthread_executing_thread = &cthread_main_thread;
 		printf(" created!\n");
 

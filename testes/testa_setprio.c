@@ -7,7 +7,7 @@ void* mythread_low(void*);
 
 int main() {
 
-	int thread1 = ccreate(mythread, (void*)1, 2);
+	int thread1 = ccreate(mythread_low, (void*)1, 2);
 	int thread2 = ccreate(mythread, (void*)2, 2);
 	int thread3 = ccreate(mythread, (void*)3, 2);
 
@@ -43,7 +43,7 @@ void* mythread(void* arg) {
 void* mythread_low(void* arg) {
 	int i=0;
 
-	csetprio(0, 1);
+	csetprio(0, 0);
 
 	for( i=0; i<5; i++ ) {
 		printf("mytrhead %d: hello world (%d)\n", (int)arg, i+1);
