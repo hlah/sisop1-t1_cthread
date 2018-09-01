@@ -26,8 +26,10 @@ int ccreate (void* (*start)(void*), void *arg, int prio) {
 	// cria main thread
 	cthread_create_main_thread();
 
-	// escalona thread
-	cthread_schedule(cthread_executing_thread, 0);
+	// escalona thread se nova prioridade maior
+	if( cthread_check_priority(prio) ) {
+		cthread_schedule(cthread_executing_thread, 0);
+	}
 	
 	return tid;
 }
