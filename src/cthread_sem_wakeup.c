@@ -1,15 +1,12 @@
 #include "../include/cthread_internal.h"
 
-int cthread_sem_block(csem_t* sem){
-    int prio = cthread_executing_thread->prio;
-    FirstFila2(sem->fila);
+void cthread_sem_wakeup(csem_t* sem, PFILA2 fifoPrio, int priority){
 
-    while (prio > 0){ // procura fila de prioridade correspondente
-        NextFila2(sem->fila);
-        prio--;
-    }
+    sem->count--;
+    GetAtIteratorFila2(fifoPrio)->state = CTHREAD_STATE_APT;
+    AppendFila2(&cthread_priority_fifos[priority], (void*) GetAtIteratorFila2(fifoPrio));
 
-    cthread_executing_thread->state = CTHREAD_STATE_BLOCK;
-    AppendFila2(GetAtIteratorFila2(sem->fila) , (void*) cthread_executing_thread); // coloca thread na lista de bloqueados
-    return cthread_schedule(cthread_executing_thread, 1); // escalona proximo thread
- }
+    if (priority > cthread_executing_thread->prio) // checa prioridade do processo bloqueado
+        cthread_schedule(cthread_executing_thread, 0);
+
+}
