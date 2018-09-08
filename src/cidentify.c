@@ -2,6 +2,6 @@
 #include <string.h>
 
 int cidentify (char *name, int size) {
-	strncpy (name, "Sergio Cechin - 2017/1 - Teste de compilacao.", size);
+	strncpy (name, "Gerente: Mateus Davi Simon - 00209411\nMembro 1: Artur Galvao Hallberg - 00246759", size);
 	return 0;
 }
