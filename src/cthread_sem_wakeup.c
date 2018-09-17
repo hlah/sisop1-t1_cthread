@@ -1,13 +1,16 @@
 #include "../include/cthread_internal.h"
 
-void cthread_sem_wakeup(csem_t* sem, PFILA2 fifoPrio, int priority){
+int cthread_sem_wakeup(csem_t* sem, PFILA2 fifoPrio){
+
+    TCB_t* unblocked_thread = GetAtIteratorFila2(fifoPrio);
 
     sem->count--;
-    GetAtIteratorFila2(fifoPrio)->state = CTHREAD_STATE_APT;
-    AppendFila2(&cthread_priority_fifos[priority], (void*) GetAtIteratorFila2(fifoPrio));
+    unblocked_thread->state = CTHREAD_STATE_APTO;
+    AppendFila2(&cthread_priority_fifos[unblocked_thread->prio], (void*) unblocked_thread);
     DeleteAtIteratorFila2(fifoPrio);
 
-    if (priority > cthread_executing_thread->prio) // checa prioridade do processo bloqueado
-        cthread_schedule(cthread_executing_thread, 0);
+    if (unblocked_thread->prio > cthread_executing_thread->prio) // checa prioridade do processo bloqueado
+        return cthread_schedule(cthread_executing_thread, 0);
 
+    return 0;
 }
