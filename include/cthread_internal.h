@@ -51,7 +51,7 @@ TCB_t* cthread_find_thread(int tid);
 // bloqueia processo esperando recurso
 int cthread_sem_block(csem_t* sem);
 // libera processo esperando recurso
-void cthread_sem_wakeup(csem_t* sem, PFILA2 filaPrio);
+int cthread_sem_wakeup(csem_t* sem, PFILA2 filaPrio);
 
 /////// variaveis internas da cthread ////////
 // indica se cthread foi inicializado
