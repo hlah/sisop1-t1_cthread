@@ -1,11 +1,14 @@
 #include "../include/cthread_internal.h"
 
+#include <stdio.h>
+
 int csignal(csem_t *sem) {
 
     int i;
     PFILA2 fifoPrio;
 
     sem -> count++;
+    DEBUG_PRINT("Thread %d leaving critical sector", cthread_executing_thread->tid);
 
     if (sem -> count == 1){
         FirstFila2(sem->fila);
