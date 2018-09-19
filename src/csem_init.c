@@ -1,5 +1,7 @@
 #include "../include/cthread_internal.h"
 
+#include <stdio.h>
+
 int csem_init(csem_t *sem, int count) {
     if (count > 0){
         int i;
