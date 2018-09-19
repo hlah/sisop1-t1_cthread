@@ -6,9 +6,9 @@ int cthread_sem_block(csem_t* sem){
     int prio = cthread_executing_thread->prio;
     FirstFila2(sem->fila);
 
-    while (prio < CTHREAD_NUM_PRIORITY_LEVELS - 1){ // procura fila de prioridade correspondente
+    while (prio > 0){ // procura fila de prioridade correspondente
         NextFila2(sem->fila);
-        prio++;
+        prio--;
     }
 
     cthread_executing_thread->state = CTHREAD_STATE_BLOCK;
