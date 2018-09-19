@@ -1,5 +1,7 @@
 #include "../include/cthread_internal.h"
 
+#include <stdio.h>
+
 int cwait(csem_t *sem) {
     sem->count--;
     
