@@ -6,7 +6,7 @@ CC=gcc
 LIB_DIR=../lib
 CFLAGS=-lcthread -Wall -m32
 
-all: testa_inicio testa_yield testa_setprio testa_join
+all: testa_inicio testa_yield testa_setprio testa_join testa_semaforo
 	
 testa_inicio: testa_inicio.c $(LIB_DIR)/libcthread.a
 	$(CC) -o testa_inicio testa_inicio.c -L$(LIB_DIR) $(CFLAGS)
@@ -19,8 +19,11 @@ testa_setprio: testa_setprio.c $(LIB_DIR)/libcthread.a
 
 testa_join: testa_join.c $(LIB_DIR)/libcthread.a
 	$(CC) -o testa_join testa_join.c -L$(LIB_DIR) $(CFLAGS)
+	
+testa_semaforo: testa_semaforo.c $(LIB_DIR)/libcthread.a
+	$(CC) -o testa_semaforo testa_semaforo.c -L$(LIB_DIR) $(CFLAGS)
 
-.PHONY: all clean testa_inicio testa_setprio testa_join testa_yield
+.PHONY: all clean testa_inicio testa_setprio testa_join testa_yield testa_semaforo
 	
 clean:
-	rm -rf testa_inicio testa_yield testa_setprio testa_join *.o *~
+	rm -rf testa_inicio testa_yield testa_setprio testa_join testa_semaforo *.o *~
