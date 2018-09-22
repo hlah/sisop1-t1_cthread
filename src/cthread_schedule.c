@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 int cthread_schedule(TCB_t* current_thread, int block) {
-	int fifo_i=CTHREAD_NUM_PRIORITY_LEVELS-1;
+	int fifo_i=0;
 
 	// move threads criados para fila de aptos
 	FirstFila2(&cthread_created_fifo);
@@ -22,10 +22,10 @@ int cthread_schedule(TCB_t* current_thread, int block) {
 
 	// obtém próximo thread
 	TCB_t* next_thread = NULL;
-	while( fifo_i >= 0 && FirstFila2(&cthread_priority_fifos[fifo_i]) != 0 ) {
-		fifo_i--;
+	while( fifo_i < CTHREAD_NUM_PRIORITY_LEVELS && FirstFila2(&cthread_priority_fifos[fifo_i]) != 0 ) {
+		fifo_i++;
 	}
-	if( fifo_i >= 0 ) {
+	if( fifo_i < CTHREAD_NUM_PRIORITY_LEVELS ) {
 		next_thread = (TCB_t*)GetAtIteratorFila2(&cthread_priority_fifos[fifo_i]);
 		DEBUG_PRINT("next thread: %p\n", next_thread);
 	}
