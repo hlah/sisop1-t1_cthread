@@ -12,8 +12,11 @@ int main() {
 	int thread2;
 
 	csem_init(&sem, 1);
-	thread1 = ccreate(mythread, (void*)1, CTHREAD_MID_PRIORITY);
-	thread2 = ccreate(mythread, (void*)2, CTHREAD_HIG_PRIORITY);
+	thread1 = ccreate(mythread, (void*)1, 1);
+	thread2 = ccreate(mythread, (void*)2, 0);
+
+	cjoin(thread1);
+	cjoin(thread2);
 
 	printf("Main: i'm back!\n");
 
@@ -22,14 +25,15 @@ int main() {
 
 
 void* mythread(void* arg) {
+	printf("Hello from thread %d\n", (int)(arg));
 
 	cwait(&sem);
-	printf("Thread %d inside critical sector", int(arg));
+	printf("Thread %d inside critical sector\n", (int)(arg));
 	cyield();
-	printf("Thread %d still inside critical sector", int(arg));
+	printf("Thread %d still inside critical sector\n", (int)(arg));
 	csignal(&sem);
 
-	printf("Thread %d ending", int(arg));
+	printf("Thread %d ending\n", (int)(arg));
 
 	return NULL;
 }
