@@ -8,8 +8,10 @@ void* mythread_low(void*);
 
 int main() {
 
-	int thread1 = ccreate(mythread, (void*)1, 2);
-	int thread2 = ccreate(mythread, (void*)2, 0);
+	int thread1 = ccreate(mythread, (void*)1, 0);
+	printf("Thread 1 created\n");
+	int thread2 = ccreate(mythread, (void*)2, 2);
+	printf("Thread 2 created\n");
 
 	cjoin(thread1);
 	cjoin(thread2);
