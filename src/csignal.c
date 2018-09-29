@@ -24,6 +24,7 @@ int csignal(csem_t *sem) {
 
 	// se há próximo
 	if( next != NULL ) {
+		next->state = CTHREAD_STATE_APTO;
 
 		// remove da lista de espera
 		while( (iter = (TCB_t*)GetAtIteratorFila2(sem->fila)) != next ) {

@@ -8,6 +8,7 @@ void cthread_terminate() {
 	// se algum thread esperando join, recoloca na fifo de aptors
 	if( cthread_executing_thread->data != NULL ) {
 		TCB_t* joined_thread = (TCB_t*)cthread_executing_thread->data;
+		joined_thread->state = CTHREAD_STATE_APTO;
 		AppendFila2(&cthread_priority_fifos[joined_thread->tid], (void*)joined_thread);
 	}
 	// libera memoria da stack

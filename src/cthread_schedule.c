@@ -12,11 +12,13 @@ int cthread_schedule(TCB_t* current_thread, int block) {
 		int priority = next_created_thread->prio;
 		AppendFila2(&cthread_priority_fifos[priority], (void*)next_created_thread);
 		DeleteAtIteratorFila2(&cthread_created_fifo);
+		next_created_thread->state = CTHREAD_STATE_APTO;
 		DEBUG_PRINT("Moved created thread %d (%p) to priority queue %d\n", next_created_thread->tid, next_created_thread, priority);
 	}
 
 	// coloca anterior na respectiva fila
 	if( current_thread != NULL && !block) {
+		current_thread->state = CTHREAD_STATE_APTO;
 		AppendFila2(&cthread_priority_fifos[current_thread->prio], (void*)current_thread);
 	}
 
@@ -39,6 +41,7 @@ int cthread_schedule(TCB_t* current_thread, int block) {
 		if( current_thread != NULL ) {
 			// swap contexts
 			DEBUG_PRINT("Swapping contexts from thread %d to thread %d!\n", current_thread->tid, next_thread->tid);
+			current_thread->state = CTHREAD_STATE_EXEC;
 			if( swapcontext( &(current_thread->context), &(next_thread->context) ) != 0 ) {
 				return -1;
 			}

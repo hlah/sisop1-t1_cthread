@@ -7,6 +7,7 @@ int cwait(csem_t *sem) {
 
 	if(sem->count < 0) {
 		AppendFila2(sem->fila, (void*)cthread_executing_thread);
+		cthread_executing_thread->state = CTHREAD_STATE_BLOCK;
 		DEBUG_PRINT("Thread %d blocked (tried to access unavailable resource)\n", cthread_executing_thread->tid);
 		cthread_schedule(cthread_executing_thread, 1);
 	}
