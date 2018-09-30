@@ -27,6 +27,7 @@ int csignal(csem_t *sem) {
 		next->state = CTHREAD_STATE_APTO;
 
 		// remove da lista de espera
+		FirstFila2(sem->fila);
 		while( (iter = (TCB_t*)GetAtIteratorFila2(sem->fila)) != next ) {
 			NextFila2(sem->fila);
 		}
